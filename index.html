@@ -8,12 +8,14 @@
     <script async src="https://cse.google.com/cse.js?cx=a61331f4ed7ba48fb"></script>
     <style>
       body {
-        filter: grayscale(100%);
         font-family: 'Courier New', Courier, monospace;
+        background-color: white;
+        color: black;
+        filter: grayscale(100%);
       }
     </style>
   </head>
-  <body class="bg-white text-black p-6">
+  <body class="p-6">
     <div class="max-w-3xl mx-auto space-y-6">
       <h1 class="text-3xl font-bold text-center">Interpol Red Notice Search powered by Recollextra®</h1>
 
@@ -41,9 +43,12 @@
 
       <div id="results" class="space-y-4 font-mono mt-6"></div>
 
+      <!-- Google Search Area -->
       <div class="mt-10 border-t pt-6">
         <h2 class="text-xl font-bold text-center mb-4">Buscar mais com o Google</h2>
-        <div class="gcse-search"></div>
+        <div class="w-full bg-white p-4 rounded shadow border border-black">
+          <div class="gcse-search" style="all: initial;"></div>
+        </div>
       </div>
     </div>
 
