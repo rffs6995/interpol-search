@@ -16,35 +16,46 @@
     <div class="max-w-3xl mx-auto space-y-6">
       <h1 class="text-3xl font-bold text-center">Interpol Red Notice Search powered by Recollextra®</h1>
 
-
-      <div class="flex gap-2">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
         <input
           type="text"
-          id="nameInput"
-          placeholder="Nome do procurado"
-          class="flex-1 px-4 py-2 border border-black rounded bg-white text-black font-mono"
+          id="forenameInput"
+          placeholder="Nome"
+          class="px-4 py-2 border border-black rounded bg-white text-black font-mono"
         />
-        <button
-          onclick="searchInterpol()"
-          class="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 font-mono"
-        >
-          Buscar
-        </button>
+        <input
+          type="text"
+          id="surnameInput"
+          placeholder="Sobrenome"
+          class="px-4 py-2 border border-black rounded bg-white text-black font-mono"
+        />
       </div>
 
-      <div id="results" class="space-y-4 font-mono"></div>
+      <button
+        onclick="searchInterpol()"
+        class="mt-2 bg-black text-white px-4 py-2 rounded hover:bg-gray-800 font-mono"
+      >
+        Buscar
+      </button>
+
+      <div id="results" class="space-y-4 font-mono mt-6"></div>
     </div>
 
     <script>
       async function searchInterpol() {
-        const name = document.getElementById('nameInput').value.trim();
+        const forename = document.getElementById('forenameInput').value.trim();
+        const surname = document.getElementById('surnameInput').value.trim();
         const resultsContainer = document.getElementById('results');
         resultsContainer.innerHTML = '';
 
-        if (!name) return;
+        if (!surname && !forename) return;
+
+        const url = new URL('https://ws-public.interpol.int/notices/v1/red');
+        if (forename) url.searchParams.set('forename', forename);
+        if (surname) url.searchParams.set('name', surname);
 
         try {
-          const res = await fetch(`https://ws-public.interpol.int/notices/v1/red?name=${encodeURIComponent(name)}`);
+          const res = await fetch(url.toString());
           const data = await res.json();
 
           if (!data._embedded || !data._embedded.notices.length) {
