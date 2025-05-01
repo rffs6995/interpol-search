@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interpol Search powered by Recollextra®</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        filter: grayscale(100%);
+        font-family: 'Courier New', Courier, monospace;
+      }
+    </style>
+  </head>
+  <body class="bg-white text-black p-6">
+    <div class="max-w-3xl mx-auto space-y-6">
+      <h1 class="text-3xl font-bold text-center">Interpol Search powered by Recollextra®</h1>
+
+      <div class="flex gap-2">
+        <input
+          type="text"
+          id="nameInput"
+          placeholder="Nome do procurado"
+          class="flex-1 px-4 py-2 border border-black rounded bg-white text-black font-mono"
+        />
+        <button
+          onclick="searchInterpol()"
+          class="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 font-mono"
+        >
+          Buscar
+        </button>
+      </div>
+
+      <div id="results" class="space-y-4 font-mono"></div>
+    </div>
+
+    <script>
+      async function searchInterpol() {
+        const name = document.getElementById('nameInput').value.trim();
+        const resultsContainer = document.getElementById('results');
+        resultsContainer.innerHTML = '';
+
+        if (!name) return;
+
+        try {
+          const res = await fetch(`https://ws-public.interpol.int/notices/v1/red?name=${encodeURIComponent(name)}`);
+          const data = await res.json();
+
+          if (!data._embedded || !data._embedded.notices.length) {
+            resultsContainer.innerHTML = '<p class="text-center text-gray-600">Nenhum resultado encontrado.</p>';
+            return;
+          }
+
+          data._embedded.notices.forEach((person) => {
+            const card = document.createElement('div');
+            card.className = 'bg-white border border-black rounded p-4 flex gap-4 items-center';
+
+            const image = document.createElement('img');
+            image.src = person._links.thumbnail.href;
+            image.alt = 'Foto';
+            image.className = 'w-24 h-24 object-cover rounded border border-black';
+
+            const info = document.createElement('div');
+            info.innerHTML = `
+              <p class="font-semibold text-lg">${person.name || ''} ${person.forename || ''}</p>
+              <p class="text-sm text-gray-800">País: ${person.nationalities?.join(', ') || 'N/A'}</p>
+            `;
+
+            card.appendChild(image);
+            card.appendChild(info);
+            resultsContainer.appendChild(card);
+          });
+        } catch (err) {
+          resultsContainer.innerHTML = '<p class="text-red-600">Erro ao consultar a API.</p>';
+          console.error('Erro na API Interpol:', err);
+        }
+      }
+    </script>
+  </body>
+</html>
