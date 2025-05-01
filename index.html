@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Interpol Red Notice Search powered by Recollextra®</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script async src="https://cse.google.com/cse.js?cx=a61331f4ed7ba48fb"></script>
     <style>
       body {
         filter: grayscale(100%);
@@ -39,6 +40,11 @@
       </button>
 
       <div id="results" class="space-y-4 font-mono mt-6"></div>
+
+      <div class="mt-10 border-t pt-6">
+        <h2 class="text-xl font-bold text-center mb-4">Buscar mais com o Google</h2>
+        <div class="gcse-search"></div>
+      </div>
     </div>
 
     <script>
@@ -72,10 +78,14 @@
             image.alt = 'Foto';
             image.className = 'w-24 h-24 object-cover rounded border border-black';
 
+            const fullName = `${person.name || ''} ${person.forename || ''}`;
+            const googleUrl = `https://www.google.com/search?q=${encodeURIComponent(fullName + ' Interpol')}`;
+
             const info = document.createElement('div');
             info.innerHTML = `
-              <p class="font-semibold text-lg">${person.name || ''} ${person.forename || ''}</p>
+              <p class="font-semibold text-lg">${fullName}</p>
               <p class="text-sm text-gray-800">País: ${person.nationalities?.join(', ') || 'N/A'}</p>
+              <a href="${googleUrl}" target="_blank" class="text-blue-700 underline">Ver no Google</a>
             `;
 
             card.appendChild(image);
